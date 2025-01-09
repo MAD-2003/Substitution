@@ -3,44 +3,45 @@
 
 using namespace std;
 
-bool is_valid_key(const char *key) {
-    int length = 0;
-    bool seen[26] = {false};
-    while (key[length] != '\0') { 
-        if (!isalpha(key[length])) {
-            return false; 
+
+bool is_valid_key(const string &key) {
+    if (key.length() != 26) {
+        return false;
+    }
+
+    bool seen[26] = {false}; 
+
+    for (char c : key) {
+        if (!isalpha(c)) {
+            return false;  
         }
 
-        int index = toupper(key[length]) - 'A';
+        int index = toupper(c) - 'A';
         if (seen[index]) {
             return false; 
         }
 
         seen[index] = true;
-        length++;
     }
 
-    return (length == 26); ng
+    return true;
 }
 
-
-char encrypt_char(char plain_char, const char *key) {
+char encrypt_char(char plain_char, const string &key) {
     if (isalpha(plain_char)) {
-        int index = toupper(plain_char) - 'A';  
-        char encrypted_char = key[index];     
+        int index = toupper(plain_char) - 'A'; 
+        char encrypted_char = key[index];      
         return islower(plain_char) ? tolower(encrypted_char) : encrypted_char;
     }
-    return plain_char; 
+    return plain_char;  
 }
 
-int main(int argc, char *argv[]) {
- 
-    if (argc != 2) {
-        cout << "Usage: ./substitution <key>" << endl;
-        return 1;
-    }
+int main() {
+    string key;
 
-    const char *key = argv[1];
+
+    cout << "Enter a 26-character key: ";
+    cin >> key;
 
 
     if (!is_valid_key(key)) {
@@ -48,17 +49,17 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-
-    char plain_char;
+    string plaintext;
     cout << "plaintext: ";
+    cin.ignore(); 
+    getline(cin, plaintext);
 
+  
     cout << "ciphertext: ";
-    while (cin.get(plain_char)) {
-        cout << encrypt_char(plain_char, key);
-        if (plain_char == '\n') {
-            break;  
-        }
+    for (char c : plaintext) {
+        cout << encrypt_char(c, key);
     }
+    cout << endl;
 
     return 0;
 }
